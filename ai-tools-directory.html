@@ -278,7 +278,7 @@
 
             <div class="ai-card-content">
 
-                <div class="ai-tool-name ai-tool-name-sm">
+                <div class="ai-tool-name">
                     LymphomaDx
                 </div>
 
@@ -367,7 +367,7 @@
 
             <div class="ai-card-content">
 
-                <div class="ai-tool-name ai-tool-name-sm">
+                <div class="ai-tool-name">
                     StageWise
                 </div>
 
@@ -506,9 +506,13 @@
 
     position: relative;
 
-    display: flex;
+    display: grid;
 
-    align-items: center;
+    grid-template-columns: 1fr;
+
+    justify-items: center;
+
+    align-content: center;
 
     min-width: 0;
 
@@ -517,6 +521,8 @@
     padding: 22px 18px;
 
     box-sizing: border-box;
+
+    text-align: center;
 
     text-decoration: none;
 
@@ -602,8 +608,6 @@
 
 .ai-icon {
 
-    flex: 0 0 68px;
-
     width: 68px;
 
     height: 68px;
@@ -614,7 +618,7 @@
 
     justify-content: center;
 
-    margin-right: 13px;
+    margin: 0;
 
     border-radius: 50%;
 
@@ -914,13 +918,7 @@
 
 .ai-card-content {
 
-    flex: 1 1 auto;
-
-    min-width: 0;
-
-    max-width: 100%;
-
-    overflow: hidden;
+    display: contents;
 
 }
 
@@ -955,21 +953,6 @@
     word-break: normal;
 
     white-space: nowrap;
-
-}
-
-
-
-/* =========================================================
-   TOOL NAME — LONG NAMES
-   LymphomaDx / StageWise
-========================================================= */
-
-.ai-tool-name.ai-tool-name-sm {
-
-    font-size: 16px;
-
-    letter-spacing: .3px;
 
 }
 
@@ -1065,6 +1048,66 @@
 
 
 /* =========================================================
+   CARD LAYOUT
+   Icon on top, centred
+   Name / Subtitle / Description below
+   Open Tool at the bottom
+========================================================= */
+
+.ai-icon {
+
+    grid-row: 1;
+
+    justify-self: center;
+
+    margin:
+        0
+        0
+        17px;
+
+}
+
+
+.ai-tool-name {
+
+    grid-row: 2;
+
+    justify-self: center;
+
+}
+
+
+.ai-tool-subtitle {
+
+    grid-row: 3;
+
+    justify-self: center;
+
+}
+
+
+.ai-tool-description {
+
+    grid-row: 4;
+
+    justify-self: stretch;
+
+}
+
+
+.ai-launch {
+
+    grid-row: 5;
+
+    justify-content: center;
+
+    margin-top: 18px;
+
+}
+
+
+
+/* =========================================================
    TABLET
 ========================================================= */
 
@@ -1083,13 +1126,6 @@
     .ai-tool-name {
 
         font-size: 20px;
-
-    }
-
-
-    .ai-tool-name.ai-tool-name-sm {
-
-        font-size: 17px;
 
     }
 
@@ -1217,7 +1253,10 @@
 
         height: 65px;
 
-        margin-right: 16px;
+        margin:
+            0
+            0
+            16px;
 
     }
 
@@ -1243,15 +1282,6 @@
         font-size: 20px;
 
         letter-spacing: .7px;
-
-    }
-
-
-    .ai-tool-name.ai-tool-name-sm {
-
-        font-size: 18px;
-
-        letter-spacing: .2px;
 
     }
 
@@ -1301,7 +1331,7 @@
 
         max-width: 330px;
 
-        display: block;
+        display: grid;
 
         text-align: center;
 
@@ -1320,7 +1350,8 @@
     .stagewise-icon {
 
         margin:
-            0 auto
+            0
+            0
             16px;
 
     }
@@ -1329,13 +1360,6 @@
     .ai-tool-name {
 
         font-size: 20px;
-
-    }
-
-
-    .ai-tool-name.ai-tool-name-sm {
-
-        font-size: 18px;
 
     }
 
