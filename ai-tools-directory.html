@@ -590,24 +590,41 @@
             /* =================================================
                DOWNLOAD LOGGING — no server, no hosting
 
-               OPTION A (recommended, free, no account needed here)
-               Log every download to a Google Sheet via a Google Form.
-               1. Create a Google Form with one Short-answer question
-                  called "Download" (anything is fine).
-               2. Open the Sheet it is linked to.
-               3. Copy the form ID out of the form URL:
-                  docs.google.com/forms/d/e/FORM_ID_HERE/viewform
-               4. Copy the question's entry ID: open the form, Ctrl+U,
-                  search for name="entry" and take the digits.
-               Then paste both below. Every click is logged with a
-               timestamp, and you read the total in the spreadsheet.
+               Everything is written into one Google Sheet through a
+               Google Form. Add these questions to the form:
 
-               OPTION B (optional) — live counter on the page.
-               Sign up at counterapi.dev and paste your workspace,
-               counter name and API key below. The running total then
-               appears under the buttons.
+               1. "Download"   multiple choice, option "Option 1"
+                               (already exists)
+               2. "Country"    Short answer
+               3. "Visitor"    Short answer
 
-               Leave both blank to switch counting off entirely.
+               Short answer is used on purpose: it accepts any text, so
+               the page can post the country name without matching an
+               option list.
+
+               Then copy the entry id of each question: open the form,
+               press Ctrl+U and search for name="entry" — each question
+               has its own number. Paste the numbers below.
+
+               Getting an entry id:
+               docs.google.com/forms/d/e/FORM_ID/viewform
+
+               Country comes from the visitor's IP (free ipwho.is
+               lookup, cached for a day in their own browser).
+               "New" or "Returning" is remembered in the visitor's
+               browser, so a second download from the same browser is
+               recorded as Returning.
+
+               Reading the numbers in the sheet: Insert > Pivot table
+               with Rows = Country to see the country split, and add a
+               pivot or a COUNTA filter on Visitor = "New" for unique
+               downloads.
+
+               OPTIONAL — live counter shown on the page.
+               Sign up at counterapi.dev and fill in the workspace,
+               counter name and API key below.
+
+               Leave anything blank to switch that part off.
             ================================================= */
 
             var FORM_ID = '1FAIpQLSezchrK64lfgxRNts8stlNcg8cRu7CJD7uZo8gxxLInALlAfA';
@@ -615,6 +632,26 @@
             var FORM_ENTRY = '903308781';
 
             var FORM_VALUE = 'Option 1';
+
+            /* Country question — dropdown entry id (blank = skip) */
+
+            var GEO_ENTRY = '141212056';
+
+            /* Visitor question — New/Returning entry id (blank = skip) */
+
+            var VISITOR_ENTRY = '392129829';
+
+            var VISITOR_NEW = 'New';
+
+            var VISITOR_RETURNING = 'Returning';
+
+            var GEO_API = 'https://ipwho.is/';
+
+            var UNIQUE_KEY = 'iapmd_ai_tools_downloaded';
+
+            var GEO_KEY = 'iapmd_ai_tools_country';
+
+            var GEO_TTL = 86400000;
 
             var COUNT_WORKSPACE = '';
 
@@ -641,36 +678,188 @@
             }
 
 
-            function logToGoogleForm() {
+            function logStatus(message) {
 
-                if (!FORM_ID || !FORM_ENTRY || !window.fetch) { return; }
+                if (typeof console !== 'undefined' && console.info) {
+                    console.info('[AI Tools] download log: ' + message);
+                }
+
+            }
+
+
+            function readCachedCountry() {
+
+                if (!GEO_ENTRY) { return ''; }
 
                 try {
 
-                    var stamp = new Date().toISOString();
+                    var raw = window.localStorage.getItem(GEO_KEY);
 
-                    fetch(
-                        'https://docs.google.com/forms/d/e/' +
-                        FORM_ID +
-                        '/formResponse',
-                        {
-                            method: 'POST',
-                            mode: 'no-cors',
-                            headers: {
-                                'Content-Type':
-                                    'application/x-www-form-urlencoded'
-                            },
-                            body:
-                                'entry.' + FORM_ENTRY + '=' +
-                                encodeURIComponent(
-                                    'AI Tools.html — ' +
-                                    navigator.userAgent.slice(0, 60) +
-                                    ' — ' + stamp
-                                )
+                    if (!raw) { return ''; }
+
+                    var saved = JSON.parse(raw);
+
+                    if (!saved || !saved.name) { return ''; }
+
+                    if (Date.now() - saved.at > GEO_TTL) { return ''; }
+
+                    return saved.name;
+
+                } catch (e) {
+
+                    return '';
+
+                }
+
+            }
+
+
+            function cacheCountry(name) {
+
+                try {
+                    window.localStorage.setItem(
+                        GEO_KEY,
+                        JSON.stringify({ name: name, at: Date.now() })
+                    );
+                } catch (e) { /* storage may be blocked */ }
+
+            }
+
+
+            var country = readCachedCountry();
+
+
+            function lookupCountry() {
+
+                if (!GEO_ENTRY || country || !window.fetch) { return; }
+
+                try {
+
+                    fetch(GEO_API).then(function (res) {
+                        return res.ok ? res.json() : null;
+                    }).then(function (data) {
+
+                        if (!data || !data.success || !data.country) {
+                            return;
                         }
-                    ).catch(function () { /* ignore */ });
+
+                        country = data.country +
+                            (data.country_code ? ' (' + data.country_code + ')' : '');
+
+                        cacheCountry(country);
+
+                    }).catch(function () { /* offline or blocked */ });
 
                 } catch (e) { /* ignore */ }
+
+            }
+
+
+            function visitorType() {
+
+                if (!VISITOR_ENTRY) { return ''; }
+
+                try {
+
+                    if (window.localStorage.getItem(UNIQUE_KEY)) {
+                        return VISITOR_RETURNING;
+                    }
+
+                    window.localStorage.setItem(UNIQUE_KEY, String(Date.now()));
+
+                    return VISITOR_NEW;
+
+                } catch (e) {
+
+                    return VISITOR_NEW;
+
+                }
+
+            }
+
+
+            function logToGoogleForm() {
+
+                if (!FORM_ID || !FORM_ENTRY) { return; }
+
+                var url =
+                    'https://docs.google.com/forms/d/e/' +
+                    FORM_ID +
+                    '/formResponse';
+
+                /* Every question is multiple choice, so each value must
+                   match the exact text of one of that question's options. */
+
+                var body =
+                    'entry.' + FORM_ENTRY + '=' +
+                    encodeURIComponent(FORM_VALUE || 'Option 1');
+
+                if (GEO_ENTRY && country) {
+
+                    body += '&entry.' + GEO_ENTRY + '=' +
+                        encodeURIComponent(country);
+
+                }
+
+                if (VISITOR_ENTRY) {
+
+                    body += '&entry.' + VISITOR_ENTRY + '=' +
+                        encodeURIComponent(visitorType());
+
+                }
+
+                /* sendBeacon survives page unload and needs no preflight */
+
+                if (window.navigator && navigator.sendBeacon) {
+
+                    try {
+
+                        if (navigator.sendBeacon(
+                            url,
+                            new URLSearchParams(body)
+                        )) {
+                            logStatus('sent (beacon)');
+                            return;
+                        }
+
+                    } catch (e) { /* fall back to fetch */ }
+
+                }
+
+                if (!window.fetch) {
+
+                    logStatus('no fetch available');
+
+                    return;
+
+                }
+
+                try {
+
+                    fetch(url, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        keepalive: true,
+                        headers: {
+                            'Content-Type':
+                                'application/x-www-form-urlencoded'
+                        },
+                        body: body
+                    }).then(function () {
+
+                        logStatus('sent (fetch)');
+
+                    }).catch(function (err) {
+
+                        logStatus('failed: ' + (err && err.message));
+
+                    });
+
+                } catch (e) {
+
+                    logStatus('failed: ' + e.message);
+
+                }
 
             }
 
@@ -742,6 +931,8 @@
             }
 
             readCount();
+
+            lookupCountry();
 
             function collectCSS() {
 
