@@ -663,7 +663,32 @@
             }
 
 
-            function saveViaLink(blob, fileName) {
+            function showProblem(message) {
+
+                var note = document.querySelector('.ai-download-note');
+
+                if (note) {
+
+                    var original = note.textContent;
+
+                    note.textContent = message;
+
+                    note.classList.add('is-error');
+
+                    setTimeout(function () {
+
+                        note.textContent = original;
+
+                        note.classList.remove('is-error');
+
+                    }, 7000);
+
+                }
+
+            }
+
+
+            function saveViaBlob(blob, fileName) {
 
                 var url = URL.createObjectURL(blob);
 
@@ -673,6 +698,8 @@
 
                 link.download = fileName;
 
+                link.style.display = 'none';
+
                 document.body.appendChild(link);
 
                 link.click();
@@ -681,65 +708,162 @@
 
                 setTimeout(function () {
                     URL.revokeObjectURL(url);
-                }, 2000);
+                }, 30000);
 
                 markDone();
 
             }
 
 
-            btn.addEventListener('click', function () {
+            function saveViaDataUri(html, fileName) {
 
-                var html = buildFile();
+                var link = document.createElement('a');
 
-                if (!html) { return; }
+                link.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
 
-                var fileName = 'AI Tools.html';
+                link.download = fileName;
 
-                var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+                link.style.display = 'none';
 
-                /* Save dialog opens on the Desktop (Chromium browsers) */
+                document.body.appendChild(link);
 
-                if (window.showSaveFilePicker) {
+                link.click();
 
-                    window.showSaveFilePicker({
+                document.body.removeChild(link);
 
-                        suggestedName: fileName,
+                markDone();
 
-                        startIn: 'desktop',
+            }
 
-                        types: [
-                            {
-                                description: 'HTML file',
-                                accept: { 'text/html': ['.html'] }
-                            }
-                        ]
 
-                    }).then(function (handle) {
+            function saveViaNewTab(html, fileName) {
 
-                        return handle.createWritable().then(function (writable) {
-                            return writable.write(blob);
-                        }).then(function () {
-                            return writable.close();
-                        });
+                var win = window.open('', '_blank');
 
-                    }).then(function () {
+                if (!win) {
 
-                        markDone();
-
-                    }).catch(function (err) {
-
-                        if (err && err.name === 'AbortError') { return; }
-
-                        saveViaLink(blob, fileName);
-
-                    });
+                    showProblem('Pop-up blocked — allow pop-ups, then press Download Page again.');
 
                     return;
 
                 }
 
-                saveViaLink(blob, fileName);
+                win.document.open();
+
+                win.document.write(html);
+
+                win.document.close();
+
+                try {
+                    win.document.title = fileName;
+                } catch (e) { /* ignore */ }
+
+                showProblem('Opened in a new tab — press Ctrl+S / ⌘S there to save it.');
+
+            }
+
+
+            function tryPicker(blob, html, fileName) {
+
+                window.showSaveFilePicker({
+
+                    suggestedName: fileName,
+
+                    startIn: 'desktop',
+
+                    types: [
+                        {
+                            description: 'HTML file',
+                            accept: { 'text/html': ['.html'] }
+                        }
+                    ]
+
+                }).then(function (handle) {
+
+                    return handle.createWritable().then(function (writable) {
+                        return writable.write(blob);
+                    }).then(function () {
+                        return writable.close();
+                    });
+
+                }).then(function () {
+
+                    markDone();
+
+                }).catch(function (err) {
+
+                    if (err && err.name === 'AbortError') { return; }
+
+                    saveViaBlob(blob, fileName);
+
+                });
+
+            }
+
+
+            btn.addEventListener('click', function () {
+
+                var html;
+
+                try {
+                    html = buildFile();
+                } catch (e) {
+
+                    showProblem('Could not build the file: ' + e.message);
+
+                    return;
+
+                }
+
+                if (!html) {
+
+                    showProblem('Could not build the file — please try again.');
+
+                    return;
+
+                }
+
+                var fileName = 'AI Tools.html';
+
+                var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+
+                if (typeof console !== 'undefined' && console.info) {
+                    console.info('[AI Tools] file size: ' + blob.size + ' bytes');
+                }
+
+                /* Tier 1 — Save dialog opening on the Desktop (Chromium) */
+
+                if (window.showSaveFilePicker) {
+
+                    try {
+
+                        tryPicker(blob, html, fileName);
+
+                        return;
+
+                    } catch (e) {
+
+                        saveViaBlob(blob, fileName);
+
+                        return;
+
+                    }
+
+                }
+
+                /* Tier 2 — Blob link (Firefox / Safari) */
+
+                if (blob.size > 0) {
+
+                    saveViaBlob(blob, fileName);
+
+                    return;
+
+                }
+
+                /* Tier 3 — Data URI (blob: blocked by CSP) */
+
+                saveViaDataUri(html, fileName);
 
             });
 
@@ -1970,6 +2094,15 @@
     letter-spacing: .2px;
 
     color: rgba(255,255,255,.55);
+
+    transition: color .2s ease;
+
+}
+
+
+.ai-download-note.is-error {
+
+    color: #FFC46B;
 
 }
 
