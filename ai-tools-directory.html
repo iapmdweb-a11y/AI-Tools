@@ -588,14 +588,39 @@
                 'chatgpt_image_sep_12__2026__09_55_35_am-removebg-preview.png?w=64';
 
             /* =================================================
-               DOWNLOAD COUNTER
-               Free hosted counter - no server or account needed.
-               Change NAMESPACE / KEY for your own counter.
-               Set COUNT_API = '' to switch counting off.
+               DOWNLOAD LOGGING — no server, no hosting
+
+               OPTION A (recommended, free, no account needed here)
+               Log every download to a Google Sheet via a Google Form.
+               1. Create a Google Form with one Short-answer question
+                  called "Download" (anything is fine).
+               2. Open the Sheet it is linked to.
+               3. Copy the form ID out of the form URL:
+                  docs.google.com/forms/d/e/FORM_ID_HERE/viewform
+               4. Copy the question's entry ID: open the form, Ctrl+U,
+                  search for name="entry" and take the digits.
+               Then paste both below. Every click is logged with a
+               timestamp, and you read the total in the spreadsheet.
+
+               OPTION B (optional) — live counter on the page.
+               Sign up at counterapi.dev and paste your workspace,
+               counter name and API key below. The running total then
+               appears under the buttons.
+
+               Leave both blank to switch counting off entirely.
             ================================================= */
 
-            var COUNT_API =
-                'https://api.counterapi.dev/v1/iapmd-net/ai-tools-downloads';
+            var FORM_ID = '1FAIpQLSezchrK64lfgxRNts8stlNcg8cRu7CJD7uZo8gxxLInALlAfA';
+
+            var FORM_ENTRY = '903308781';
+
+            var FORM_VALUE = 'Option 1';
+
+            var COUNT_WORKSPACE = '';
+
+            var COUNT_NAME = 'ai-tools-downloads';
+
+            var COUNT_KEY = '';
 
             var countBox = document.getElementById('aiDownloadCount');
 
@@ -616,19 +641,77 @@
             }
 
 
-            function readCount() {
+            function logToGoogleForm() {
 
-                if (!COUNT_API || !window.fetch) { return; }
+                if (!FORM_ID || !FORM_ENTRY || !window.fetch) { return; }
 
                 try {
 
-                    fetch(COUNT_API).then(function (res) {
-                        return res.ok ? res.json() : null;
-                    }).then(function (data) {
-                        if (data && typeof data.count === 'number') {
-                            showCount(data.count);
+                    var stamp = new Date().toISOString();
+
+                    fetch(
+                        'https://docs.google.com/forms/d/e/' +
+                        FORM_ID +
+                        '/formResponse',
+                        {
+                            method: 'POST',
+                            mode: 'no-cors',
+                            headers: {
+                                'Content-Type':
+                                    'application/x-www-form-urlencoded'
+                            },
+                            body:
+                                'entry.' + FORM_ENTRY + '=' +
+                                encodeURIComponent(
+                                    'AI Tools.html — ' +
+                                    navigator.userAgent.slice(0, 60) +
+                                    ' — ' + stamp
+                                )
                         }
-                    }).catch(function () { /* offline or blocked */ });
+                    ).catch(function () { /* ignore */ });
+
+                } catch (e) { /* ignore */ }
+
+            }
+
+
+            function counterUrl(path) {
+
+                if (!COUNT_WORKSPACE || !COUNT_NAME) { return ''; }
+
+                return 'https://api.counterapi.dev/v2/' +
+                    COUNT_WORKSPACE + '/' + COUNT_NAME + path;
+
+            }
+
+
+            function counterHeaders() {
+
+                return COUNT_KEY
+                    ? { 'Authorization': 'Bearer ' + COUNT_KEY }
+                    : {};
+
+            }
+
+
+            function readCount() {
+
+                var url = counterUrl('');
+
+                if (!url || !window.fetch) { return; }
+
+                try {
+
+                    fetch(url, { headers: counterHeaders() })
+                        .then(function (res) {
+                            return res.ok ? res.json() : null;
+                        })
+                        .then(function (data) {
+                            if (data && typeof data.count === 'number') {
+                                showCount(data.count);
+                            }
+                        })
+                        .catch(function () { /* blocked or offline */ });
 
                 } catch (e) { /* ignore */ }
 
@@ -637,17 +720,22 @@
 
             function countDownload() {
 
-                if (!COUNT_API || !window.fetch) { return; }
+                var url = counterUrl('/up');
+
+                if (!url || !window.fetch) { return; }
 
                 try {
 
-                    fetch(COUNT_API + '?increment=true').then(function (res) {
-                        return res.ok ? res.json() : null;
-                    }).then(function (data) {
-                        if (data && typeof data.count === 'number') {
-                            showCount(data.count);
-                        }
-                    }).catch(function () { /* ignore */ });
+                    fetch(url, { headers: counterHeaders() })
+                        .then(function (res) {
+                            return res.ok ? res.json() : null;
+                        })
+                        .then(function (data) {
+                            if (data && typeof data.count === 'number') {
+                                showCount(data.count);
+                            }
+                        })
+                        .catch(function () { /* ignore */ });
 
                 } catch (e) { /* ignore */ }
 
@@ -754,6 +842,15 @@
 
             }
 
+
+            function logDownload() {
+
+                logToGoogleForm();
+
+                countDownload();
+
+            }
+
             function saveViaBlob(blob, fileName) {
 
                 var url = URL.createObjectURL(blob);
@@ -813,7 +910,7 @@
 
                 if (blob.size > 0) {
 
-                    countDownload();
+                    logDownload();
 
                     saveViaBlob(blob, fileName);
 
@@ -834,6 +931,8 @@
                 link.click();
 
                 document.body.removeChild(link);
+
+                logDownload();
 
                 markDone();
 
