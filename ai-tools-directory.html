@@ -698,13 +698,17 @@
 
                 link.download = fileName;
 
+                link.rel = 'noopener';
+
                 link.style.display = 'none';
 
                 document.body.appendChild(link);
 
                 link.click();
 
-                document.body.removeChild(link);
+                setTimeout(function () {
+                    document.body.removeChild(link);
+                }, 100);
 
                 setTimeout(function () {
                     URL.revokeObjectURL(url);
@@ -763,7 +767,21 @@
             }
 
 
+            function removeEmptyFile(handle) {
+
+                if (!handle || !handle.removeEntry) { return; }
+
+                try {
+                    var p = handle.removeEntry();
+                    if (p && p.catch) { p.catch(function () { /* ignore */ }); }
+                } catch (e) { /* ignore */ }
+
+            }
+
+
             function tryPicker(blob, html, fileName) {
+
+                var handle = null;
 
                 window.showSaveFilePicker({
 
@@ -778,21 +796,47 @@
                         }
                     ]
 
-                }).then(function (handle) {
+                }).then(function (picked) {
+
+                    handle = picked;
 
                     return handle.createWritable().then(function (writable) {
                         return writable.write(blob);
                     }).then(function () {
                         return writable.close();
+                    }).then(function () {
+
+                        /* Verify the bytes actually landed on disk */
+
+                        return handle.getFile().then(function (file) {
+                            return file ? file.size : 0;
+                        });
+
+                    }).then(function (size) {
+
+                        if (size > 0) {
+
+                            markDone();
+
+                            return true;
+
+                        }
+
+                        removeEmptyFile(handle);
+
+                        showProblem('Desktop save came out empty — saving to your Downloads folder instead.');
+
+                        saveViaBlob(blob, fileName);
+
+                        return true;
+
                     });
-
-                }).then(function () {
-
-                    markDone();
 
                 }).catch(function (err) {
 
                     if (err && err.name === 'AbortError') { return; }
+
+                    removeEmptyFile(handle);
 
                     saveViaBlob(blob, fileName);
 
@@ -825,13 +869,16 @@
 
                 var fileName = 'AI Tools.html';
 
-                var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+                /* octet-stream so Edge downloads the file
+                   instead of opening the .html document */
+
+                var blob = new Blob([html], { type: 'application/octet-stream' });
 
                 if (typeof console !== 'undefined' && console.info) {
                     console.info('[AI Tools] file size: ' + blob.size + ' bytes');
                 }
 
-                /* Tier 1 — Save dialog opening on the Desktop (Chromium) */
+                /* Tier 1 — Save dialog opening on the Desktop (Chromium / Edge) */
 
                 if (window.showSaveFilePicker) {
 
