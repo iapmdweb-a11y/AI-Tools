@@ -14,12 +14,20 @@
 
     <div class="ai-banner">
 
-        <div class="ai-banner-logo">
+        <button type="button"
+                class="ai-banner-logo"
+                id="aiLogoBtn"
+                aria-expanded="false"
+                aria-controls="aiDevPanel">
 
             <img
                 src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_12__2026__09_55_35_am-removebg-preview.png?w=160"
-                alt="IAPMD AI Tools">
+                alt="IAPMD AI Tools — show developer details">
 
+        </button>
+
+        <div class="ai-banner-hint">
+            Tap the logo for developer details
         </div>
 
         <div class="ai-title">
@@ -28,6 +36,45 @@
 
         <div class="ai-tagline">
             Intelligent Solutions for Pathology Innovation
+        </div>
+
+
+        <!-- =================================================
+             DEVELOPER PANEL
+        ================================================= -->
+
+        <div class="ai-developer" id="aiDevPanel" hidden>
+
+            <div class="ai-developer-card">
+
+                <img
+                    class="ai-developer-photo"
+                    src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/kadir.png?w=1080"
+                    alt="Dr. Abdul Kadir Rifaei">
+
+                <div class="ai-developer-text">
+
+                    <div class="ai-developer-name">
+                        Dr. Abdul Kadir Rifaei
+                    </div>
+
+                    <div class="ai-developer-role">
+                        Pakar Patologi UD15
+                    </div>
+
+                    <div class="ai-developer-dept">
+                        Jabatan Patologi, Hospital Teluk Intan
+                    </div>
+
+                </div>
+
+                <img
+                    class="ai-developer-logo"
+                    src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/logo_hospital_teluk_intan.png?w=1080"
+                    alt="Hospital Teluk Intan">
+
+            </div>
+
         </div>
 
     </div>
@@ -404,21 +451,37 @@
 
 
     <!-- =====================================================
-         DOWNLOAD BUTTON
+         ACTION BUTTONS
     ===================================================== -->
 
     <div class="ai-download">
 
-        <button type="button" class="ai-download-btn" id="aiDownloadBtn">
+        <div class="ai-download-actions">
 
-            <span class="ai-download-icon">↓</span>
+            <a href="https://www.iapmd.net/path-quiz"
+               class="ai-download-btn ai-quiz-btn"
+               target="_blank"
+               rel="noopener noreferrer">
 
-            <span class="ai-download-label">Download Page</span>
+                <span class="ai-download-icon">?</span>
 
-        </button>
+                <span class="ai-download-label">PathQuiz</span>
+
+            </a>
+
+
+            <button type="button" class="ai-download-btn" id="aiDownloadBtn">
+
+                <span class="ai-download-icon">↓</span>
+
+                <span class="ai-download-label">Download Page</span>
+
+            </button>
+
+        </div>
 
         <div class="ai-download-note">
-            Saves the AI Tools directory as a standalone HTML file
+            Test yourself with PathQuiz, or save the directory as AI Tools.html
         </div>
 
     </div>
@@ -432,6 +495,49 @@
                 'https://cdn1.artcltn.com/storage/25635/' +
                 'a233962a-ffe4-4e35-a0f2-86c48caa4ff2/' +
                 'chatgpt_image_sep_12__2026__09_55_35_am-removebg-preview.png?w=64';
+
+            /* =====================================================
+               DEVELOPER PANEL TOGGLE
+            ===================================================== */
+
+            var logoBtn = document.getElementById('aiLogoBtn');
+
+            var devPanel = document.getElementById('aiDevPanel');
+
+            if (logoBtn && devPanel) {
+
+                var toggleDev = function () {
+
+                    var isOpen = logoBtn.getAttribute('aria-expanded') === 'true';
+
+                    logoBtn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+
+                    logoBtn.classList.toggle('is-open', !isOpen);
+
+                    devPanel.hidden = isOpen;
+
+                };
+
+                logoBtn.addEventListener('click', toggleDev);
+
+                logoBtn.addEventListener('keydown', function (e) {
+
+                    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+
+                        e.preventDefault();
+
+                        toggleDev();
+
+                    }
+
+                });
+
+            }
+
+
+            /* =====================================================
+               DOWNLOAD
+            ===================================================== */
 
             var btn = document.getElementById('aiDownloadBtn');
 
@@ -467,7 +573,9 @@
 
                         if (!text) { continue; }
 
-                        if (text.indexOf('iapmd') > -1 || text.indexOf('ai-') > -1) {
+                        if (text.indexOf('iapmd') > -1 ||
+                            text.indexOf('ai-') > -1 ||
+                            text.indexOf('keyframes') > -1) {
                             out.push(text);
                         }
 
@@ -506,21 +614,36 @@
                     '</html>';
 
             }
+            function markDone() {
 
-            btn.addEventListener('click', function () {
+                if (!label) { return; }
 
-                var html = buildFile();
+                var original = label.textContent;
 
-                if (!html) { return; }
+                label.textContent = 'Saved';
 
-                var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+                btn.classList.add('is-done');
+
+                setTimeout(function () {
+
+                    label.textContent = original;
+
+                    btn.classList.remove('is-done');
+
+                }, 2200);
+
+            }
+
+
+            function saveViaLink(blob, fileName) {
 
                 var url = URL.createObjectURL(blob);
 
                 var link = document.createElement('a');
 
                 link.href = url;
-                link.download = 'iapmd-ai-tools.html';
+
+                link.download = fileName;
 
                 document.body.appendChild(link);
 
@@ -532,23 +655,63 @@
                     URL.revokeObjectURL(url);
                 }, 2000);
 
-                if (label) {
+                markDone();
 
-                    var original = label.textContent;
+            }
 
-                    label.textContent = 'Downloaded';
 
-                    btn.classList.add('is-done');
+            btn.addEventListener('click', function () {
 
-                    setTimeout(function () {
+                var html = buildFile();
 
-                        label.textContent = original;
+                if (!html) { return; }
 
-                        btn.classList.remove('is-done');
+                var fileName = 'AI Tools.html';
 
-                    }, 2200);
+                var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+
+                /* Save dialog opens on the Desktop (Chromium browsers) */
+
+                if (window.showSaveFilePicker) {
+
+                    window.showSaveFilePicker({
+
+                        suggestedName: fileName,
+
+                        startIn: 'desktop',
+
+                        types: [
+                            {
+                                description: 'HTML file',
+                                accept: { 'text/html': ['.html'] }
+                            }
+                        ]
+
+                    }).then(function (handle) {
+
+                        return handle.createWritable().then(function (writable) {
+                            return writable.write(blob);
+                        }).then(function () {
+                            return writable.close();
+                        });
+
+                    }).then(function () {
+
+                        markDone();
+
+                    }).catch(function (err) {
+
+                        if (err && err.name === 'AbortError') { return; }
+
+                        saveViaLink(blob, fileName);
+
+                    });
+
+                    return;
 
                 }
+
+                saveViaLink(blob, fileName);
 
             });
 
@@ -599,13 +762,31 @@
 
 .ai-banner-logo {
 
-    display: flex;
+    display: inline-flex;
 
     align-items: center;
 
     justify-content: center;
 
-    margin-bottom: 16px;
+    margin:
+        0 auto
+        10px;
+
+    padding: 0;
+
+    background: transparent;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    cursor: pointer;
+
+    -webkit-appearance: none;
+
+    appearance: none;
+
+    transition: transform .25s ease;
 
 }
 
@@ -625,6 +806,225 @@
     filter:
         drop-shadow(0 0 10px rgba(0,180,216,.55))
         drop-shadow(0 0 22px rgba(0,180,216,.25));
+
+    transition: filter .25s ease;
+
+}
+
+
+.ai-banner-logo:hover {
+
+    transform: scale(1.06);
+
+}
+
+
+.ai-banner-logo:hover img,
+.ai-banner-logo.is-open img {
+
+    filter:
+        drop-shadow(0 0 14px rgba(0,217,255,.75))
+        drop-shadow(0 0 30px rgba(0,180,216,.35));
+
+}
+
+
+.ai-banner-logo.is-open {
+
+    box-shadow:
+        0 0 0 2px rgba(0,217,255,.55),
+        0 0 26px rgba(0,180,216,.30);
+
+}
+
+
+.ai-banner-logo:focus-visible {
+
+    outline: 2px solid #00D9FF;
+
+    outline-offset: 4px;
+
+}
+
+
+.ai-banner-hint {
+
+    margin-bottom: 12px;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 10.5px;
+
+    line-height: 1.4;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+
+    color: rgba(0,180,216,.70);
+
+}
+
+
+
+/* =========================================================
+   DEVELOPER PANEL
+========================================================= */
+
+.ai-developer {
+
+    max-width: 660px;
+
+    margin: 26px auto 0;
+
+    animation: aiFadeIn .3s ease;
+
+}
+
+.ai-developer[hidden] {
+
+    display: none;
+
+}
+
+@keyframes aiFadeIn {
+
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+
+}
+
+
+.ai-developer-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding: 18px 20px;
+
+    box-sizing: border-box;
+
+    text-align: left;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(9,35,63,.95),
+            rgba(5,23,43,.95)
+        );
+
+    border: 1px solid rgba(0,180,216,.55);
+
+    border-radius: 16px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.35),
+        inset 0 0 22px rgba(0,180,216,.05);
+
+}
+
+
+.ai-developer-photo {
+
+    flex: 0 0 96px;
+
+    width: 96px;
+
+    height: 96px;
+
+    object-fit: cover;
+
+    object-position: center top;
+
+    border-radius: 50%;
+
+    border: 2px solid rgba(0,180,216,.75);
+
+    box-shadow: 0 0 18px rgba(0,180,216,.35);
+
+}
+
+
+.ai-developer-text {
+
+    flex: 1 1 auto;
+
+    min-width: 0;
+
+}
+
+
+.ai-developer-name {
+
+    font-size: 19px;
+
+    line-height: 1.25;
+
+    font-weight: 700;
+
+    letter-spacing: .6px;
+
+    color: #FFFFFF;
+
+    text-shadow: 0 0 10px rgba(0,180,216,.45);
+
+}
+
+
+.ai-developer-role {
+
+    margin-top: 6px;
+
+    font-size: 12.5px;
+
+    line-height: 1.4;
+
+    letter-spacing: .5px;
+
+    color: #00B4D8;
+
+}
+
+
+.ai-developer-dept {
+
+    margin-top: 5px;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 12.5px;
+
+    line-height: 1.5;
+
+    color: rgba(255,255,255,.80);
+
+}
+
+
+.ai-developer-logo {
+
+    flex: 0 0 78px;
+
+    width: 78px;
+
+    height: 78px;
+
+    padding: 5px;
+
+    box-sizing: border-box;
+
+    object-fit: contain;
+
+    object-position: center;
+
+    background: #FFFFFF;
+
+    border: 1px solid rgba(0,180,216,.45);
+
+    border-radius: 12px;
 
 }
 
@@ -1327,6 +1727,21 @@
 }
 
 
+.ai-download-actions {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+}
+
+
 .ai-download-btn {
 
     display: inline-flex;
@@ -1458,6 +1873,64 @@
 }
 
 
+
+/* =========================================================
+   PATHQUIZ BUTTON
+========================================================= */
+
+.ai-quiz-btn {
+
+    text-decoration: none;
+
+    border-color: rgba(0,180,216,.90);
+
+    box-shadow:
+        0 8px 25px rgba(0,0,0,.30),
+        0 0 18px rgba(0,180,216,.20),
+        inset 0 0 20px rgba(0,180,216,.07);
+
+}
+
+
+.ai-quiz-btn .ai-download-icon {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 18px;
+
+    height: 18px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    line-height: 1;
+
+    color: #051729;
+
+    background: #00D9FF;
+
+    border-radius: 50%;
+
+    box-shadow: 0 0 10px rgba(0,217,255,.55);
+
+}
+
+
+.ai-quiz-btn:hover {
+
+    box-shadow:
+        0 14px 32px rgba(0,0,0,.40),
+        0 0 26px rgba(0,180,216,.30),
+        inset 0 0 22px rgba(0,180,216,.09);
+
+}
+
+
 .ai-download-note {
 
     font-family: Arial, sans-serif;
@@ -1528,7 +2001,7 @@
 
     .ai-banner-logo {
 
-        margin-bottom: 12px;
+        margin-bottom: 8px;
 
     }
 
@@ -1693,6 +2166,48 @@
 ========================================================= */
 
 @media (max-width: 480px) {
+
+    .ai-developer-card {
+
+        flex-direction: column;
+
+        gap: 14px;
+
+        text-align: center;
+
+        padding: 20px 16px;
+
+    }
+
+
+    .ai-developer-photo {
+
+        flex: 0 0 84px;
+
+        width: 84px;
+
+        height: 84px;
+
+    }
+
+
+    .ai-developer-name {
+
+        font-size: 17px;
+
+    }
+
+
+    .ai-developer-logo {
+
+        flex: 0 0 66px;
+
+        width: 66px;
+
+        height: 66px;
+
+    }
+
 
     .ai-directory {
 
