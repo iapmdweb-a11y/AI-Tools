@@ -1,0 +1,1379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IAPMD AI Tools</title>
+<link rel="icon" type="image/png" sizes="32x32" href="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_12__2026__09_55_35_am-removebg-preview.png?w=64">
+<link rel="apple-touch-icon" href="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_12__2026__09_55_35_am-removebg-preview.png?w=64">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body { margin: 0; background: #051729; }
+
+.iapmd-forum-header { width: 100%; padding: 40px 30px 45px; box-sizing: border-box; background: linear-gradient(145deg, rgb(2, 26, 54) 0%, rgb(6, 57, 94) 55%, rgb(5, 80, 117) 100%); border: 1px solid rgba(212, 175, 55, 0.4); border-radius: 20px; text-align: left; position: relative; overflow: hidden; box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 30px, rgba(255, 255, 255, 0.1) 0px 1px 3px inset; }
+
+.iapmd-forum-header::before { content: ""; position: absolute; right: 0px; bottom: 0px; top: 0px; width: 35%; opacity: 0.15; pointer-events: none; background-image: linear-gradient(90deg, rgb(66, 133, 244) 2px, transparent 2px), linear-gradient(90deg, rgb(24, 123, 130) 2px, transparent 2px); background-size: 8px 60%, 12px 40%; background-repeat: repeat-x; background-position: right bottom; mask-image: linear-gradient(to left, rgb(0, 0, 0) 30%, rgba(0, 0, 0, 0)); }
+
+.iapmd-forum-header::after { content: ""; position: absolute; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(66, 133, 244, 0.12) 0%, transparent 70%); top: -150px; left: -100px; pointer-events: none; }
+
+.iapmd-forum-content-wrapper { max-width: 65%; position: relative; z-index: 2; }
+
+.iapmd-forum-title { margin: 0px; font-family: Montserrat, sans-serif; font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: 1.5px; line-height: 1.1; color: rgb(255, 255, 255); }
+
+.iapmd-forum-title span.gold-text { color: rgb(244, 215, 123); background: linear-gradient(135deg, rgb(255, 255, 255) 0%, rgb(244, 215, 123) 100%) text; -webkit-text-fill-color: transparent; }
+
+.iapmd-forum-tagline { margin: 0px 0px 10px; font-family: Manrope, sans-serif; font-size: clamp(12px, 1.5vw, 15px); font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: rgb(244, 215, 123); }
+
+.iapmd-forum-description { margin: 14px 0px 0px; font-family: Manrope, sans-serif; font-size: 14px; line-height: 1.6; font-weight: 400; color: rgba(255, 255, 255, 0.85); }
+
+.iapmd-forum-btn-container { position: absolute; right: 40px; top: 50%; transform: translateY(-50%); z-index: 3; }
+
+.iapmd-forum-btn { display: flex; align-items: center; gap: 10px; padding: 16px 36px; font-family: Manrope, sans-serif; font-size: 15px; font-weight: 800; letter-spacing: 0.5px; text-decoration: none; color: rgb(3, 26, 54); background: linear-gradient(rgb(252, 239, 167) 0%, rgb(244, 215, 123) 50%, rgb(212, 175, 55) 100%); border: 1px solid rgb(252, 239, 167); border-radius: 50px; box-shadow: rgba(0, 0, 0, 0.4) 0px 4px 15px, rgba(244, 215, 123, 0.25) 0px 0px 20px; transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+
+.iapmd-forum-btn .btn-arrow { font-size: 18px; transition: transform 0.3s; }
+
+.iapmd-forum-btn:hover { background: rgb(255, 255, 255); color: rgb(6, 57, 94); border-color: rgb(255, 255, 255); transform: translateY(-50%) scale(1.03); box-shadow: rgba(255, 255, 255, 0.3) 0px 8px 25px; }
+
+.iapmd-forum-btn:hover .btn-arrow { transform: translateX(4px); }
+
+@media (max-width: 900px) {
+  .iapmd-forum-header { padding: 30px 20px; text-align: center; }
+  .iapmd-forum-content-wrapper { max-width: 100%; }
+  .iapmd-forum-header::before { width: 100%; opacity: 0.08; }
+  .iapmd-forum-btn-container { position: relative; right: auto; top: auto; transform: none; margin-top: 30px; display: inline-block; }
+  .iapmd-forum-btn:hover { transform: scale(1.03); }
+}
+
+@media (max-width: 600px) {
+  .iapmd-forum-header { border-radius: 14px; padding: 25px 16px; }
+  .iapmd-forum-title { font-size: 26px; }
+  .iapmd-forum-tagline { font-size: 11px; letter-spacing: 2px; }
+  .iapmd-forum-description { font-size: 13px; line-height: 1.5; }
+  .iapmd-forum-btn { padding: 14px 28px; font-size: 13px; }
+}
+
+.iapmd-ai-tools { width: 100%; max-width: 1500px; margin: 0px auto; padding: 20px 18px 50px; box-sizing: border-box; font-family: Orbitron, sans-serif; }
+
+.ai-banner { text-align: center; padding: 20px 10px 38px; }
+
+.ai-banner-logo { display: inline-flex; align-items: center; justify-content: center; margin: 0px auto 10px; padding: 0px; background: transparent; border: 0px; border-radius: 50%; cursor: pointer; appearance: none; transition: transform 0.25s; }
+
+.ai-banner-logo img { width: 86px; height: 86px; display: block; object-fit: contain; object-position: center center; filter: drop-shadow(rgba(0, 180, 216, 0.55) 0px 0px 10px) drop-shadow(rgba(0, 180, 216, 0.25) 0px 0px 22px); transition: filter 0.25s; }
+
+.ai-banner-logo:hover { transform: scale(1.06); }
+
+.ai-banner-logo:hover img, .ai-banner-logo.is-open img { filter: drop-shadow(rgba(0, 217, 255, 0.75) 0px 0px 14px) drop-shadow(rgba(0, 180, 216, 0.35) 0px 0px 30px); }
+
+.ai-banner-logo.is-open { box-shadow: rgba(0, 217, 255, 0.55) 0px 0px 0px 2px, rgba(0, 180, 216, 0.3) 0px 0px 26px; }
+
+.ai-banner-logo:focus-visible { outline: rgb(0, 217, 255) solid 2px; outline-offset: 4px; }
+
+.ai-banner-hint { margin-bottom: 12px; font-family: Arial, sans-serif; font-size: 10.5px; line-height: 1.4; letter-spacing: 1px; text-transform: uppercase; color: rgba(0, 180, 216, 0.7); }
+
+.ai-developer { max-width: 660px; margin: 26px auto 0px; animation: 0.3s ease 0s 1 normal none running aiFadeIn; }
+
+.ai-developer[hidden] { display: none; }
+
+@keyframes aiFadeIn { 
+  0% { opacity: 0; transform: translateY(-6px); }
+  100% { opacity: 1; transform: translateY(0px); }
+}
+
+.ai-developer-card { display: flex; align-items: center; gap: 20px; padding: 18px 20px; box-sizing: border-box; text-align: left; background: linear-gradient(145deg, rgba(9, 35, 63, 0.95), rgba(5, 23, 43, 0.95)); border: 1px solid rgba(0, 180, 216, 0.55); border-radius: 16px; box-shadow: rgba(0, 0, 0, 0.35) 0px 10px 30px, rgba(0, 180, 216, 0.05) 0px 0px 22px inset; }
+
+.ai-developer-photo { flex: 0 0 96px; width: 96px; height: 96px; object-fit: cover; object-position: center top; border-radius: 50%; border: 2px solid rgba(0, 180, 216, 0.75); box-shadow: rgba(0, 180, 216, 0.35) 0px 0px 18px; }
+
+.ai-developer-text { flex: 1 1 auto; min-width: 0px; }
+
+.ai-developer-name { font-size: 19px; line-height: 1.25; font-weight: 700; letter-spacing: 0.6px; color: rgb(255, 255, 255); text-shadow: rgba(0, 180, 216, 0.45) 0px 0px 10px; }
+
+.ai-developer-role { margin-top: 6px; font-size: 12.5px; line-height: 1.4; letter-spacing: 0.5px; color: rgb(0, 180, 216); }
+
+.ai-developer-dept { margin-top: 5px; font-family: Arial, sans-serif; font-size: 12.5px; line-height: 1.5; color: rgba(255, 255, 255, 0.8); }
+
+.ai-developer-logo { flex: 0 0 78px; width: 78px; height: 78px; padding: 5px; box-sizing: border-box; object-fit: contain; object-position: center center; background: rgb(255, 255, 255); border: 1px solid rgba(0, 180, 216, 0.45); border-radius: 12px; }
+
+.ai-title { font-family: Orbitron, sans-serif; font-size: 48px; font-weight: 700; color: rgb(255, 255, 255); letter-spacing: 3px; text-shadow: rgba(0, 180, 255, 0.7) 0px 0px 8px, rgba(0, 180, 255, 0.5) 0px 0px 18px, rgba(0, 180, 255, 0.25) 0px 0px 30px; }
+
+.ai-tagline { font-family: Orbitron, sans-serif; font-size: 22px; font-weight: 500; color: rgb(0, 180, 216); margin-top: 10px; letter-spacing: 1.5px; line-height: 1.5; }
+
+.ai-directory { display: grid; grid-template-columns: repeat(4, minmax(0px, 1fr)); gap: 18px; width: 100%; max-width: 1450px; margin: 0px auto; }
+
+.ai-tool-card { position: relative; display: grid; grid-template-columns: 1fr; justify-items: center; align-content: center; min-width: 0px; min-height: 225px; padding: 22px 18px; box-sizing: border-box; text-align: center; text-decoration: none; overflow: hidden; background: linear-gradient(145deg, rgba(9, 35, 63, 0.98), rgba(5, 23, 43, 0.98)); border: 1px solid rgba(0, 180, 216, 0.65); border-radius: 18px; box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 25px, rgba(0, 180, 216, 0.04) 0px 0px 20px inset; transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s; }
+
+.ai-tool-card::before { content: ""; position: absolute; top: 0px; left: 12%; width: 76%; height: 2px; background: rgb(0, 180, 216); box-shadow: rgb(0, 180, 216) 0px 0px 8px, rgba(0, 180, 216, 0.7) 0px 0px 18px; border-radius: 10px; }
+
+.ai-tool-card:hover { transform: translateY(-7px); border-color: rgb(0, 217, 255); box-shadow: rgba(0, 0, 0, 0.4) 0px 15px 40px, rgba(0, 180, 216, 0.25) 0px 0px 25px, rgba(0, 180, 216, 0.1) 0px 0px 45px, rgba(0, 180, 216, 0.06) 0px 0px 25px inset; }
+
+.ai-icon { width: 68px; height: 68px; display: flex; align-items: center; justify-content: center; margin: 0px; border-radius: 50%; border: 1px solid rgba(0, 180, 216, 0.65); background: radial-gradient(circle, rgba(0, 180, 216, 0.18), rgba(0, 180, 216, 0.03)); box-shadow: rgba(0, 180, 216, 0.2) 0px 0px 15px; box-sizing: border-box; overflow: hidden; }
+
+.ai-icon img { width: 100%; height: 100%; display: block; object-fit: contain; object-position: center center; }
+
+.ai-card-content { display: contents; }
+
+.ai-tool-name { max-width: 100%; margin: 0px; font-size: 19px; line-height: 1.2; font-weight: 700; letter-spacing: 0.8px; color: rgb(255, 255, 255); text-shadow: rgba(0, 180, 216, 0.5) 0px 0px 10px; overflow-wrap: anywhere; word-break: normal; white-space: nowrap; }
+
+.ai-tool-subtitle { margin-top: 6px; font-size: 11px; line-height: 1.35; letter-spacing: 0.4px; color: rgb(0, 180, 216); }
+
+.ai-tool-description { margin-top: 12px; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.5; color: rgba(255, 255, 255, 0.8); max-width: 100%; }
+
+.ai-launch { display: flex; align-items: center; gap: 9px; margin-top: 17px; font-size: 10px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; color: rgb(255, 255, 255); }
+
+.ai-launch .arrow { font-family: Arial, sans-serif; font-size: 20px; color: rgb(0, 217, 255); transition: transform 0.25s; }
+
+.ai-tool-card:hover .arrow { transform: translateX(7px); }
+
+.ai-icon { grid-row: 1; justify-self: center; margin: 0px 0px 17px; }
+
+.ai-tool-name { grid-row: 2; justify-self: center; }
+
+.ai-tool-subtitle { grid-row: 3; justify-self: center; }
+
+.ai-tool-description { grid-row: 4; justify-self: stretch; }
+
+.ai-launch { grid-row: 5; justify-content: center; margin-top: 18px; }
+
+.ai-download { display: flex; flex-direction: column; align-items: center; gap: 11px; margin-top: 30px; padding: 0px 10px; font-family: Orbitron, sans-serif; text-align: center; }
+
+.ai-download-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; }
+
+.ai-download-btn { display: inline-flex; align-items: center; gap: 10px; margin: 0px; padding: 13px 24px; font-family: Orbitron, sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; line-height: 1; color: rgb(255, 255, 255); background: linear-gradient(145deg, rgba(9, 35, 63, 0.98), rgba(5, 23, 43, 0.98)); border: 1px solid rgba(0, 180, 216, 0.65); border-radius: 12px; box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 25px, rgba(0, 180, 216, 0.04) 0px 0px 20px inset; cursor: pointer; transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s; appearance: none; }
+
+.ai-download-btn:hover { transform: translateY(-3px); border-color: rgb(0, 217, 255); box-shadow: rgba(0, 0, 0, 0.4) 0px 14px 32px, rgba(0, 180, 216, 0.25) 0px 0px 24px, rgba(0, 180, 216, 0.06) 0px 0px 22px inset; }
+
+.ai-download-btn:active { transform: translateY(0px); }
+
+.ai-download-btn:focus-visible { outline: rgb(0, 217, 255) solid 2px; outline-offset: 3px; }
+
+.ai-download-btn .ai-download-icon { font-family: Arial, sans-serif; font-size: 18px; line-height: 1; color: rgb(0, 217, 255); transition: transform 0.25s; }
+
+.ai-download-btn:hover .ai-download-icon { transform: translateY(2px); }
+
+.ai-download-btn.is-done { border-color: rgb(46, 204, 113); box-shadow: rgba(46, 204, 113, 0.28) 0px 0px 22px; }
+
+.ai-download-btn.is-done .ai-download-icon { color: rgb(46, 204, 113); }
+
+.ai-download-btn.is-done .ai-download-label { color: rgb(46, 204, 113); }
+
+.ai-badge-btn { text-decoration: none; border-color: rgba(0, 180, 216, 0.9); box-shadow: rgba(0, 0, 0, 0.3) 0px 8px 25px, rgba(0, 180, 216, 0.2) 0px 0px 18px, rgba(0, 180, 216, 0.07) 0px 0px 20px inset; }
+
+.ai-badge-btn .ai-download-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; font-size: 13px; font-weight: 700; line-height: 1; color: rgb(5, 23, 41); background: rgb(0, 217, 255); border-radius: 50%; box-shadow: rgba(0, 217, 255, 0.55) 0px 0px 10px; }
+
+.ai-badge-btn:hover { box-shadow: rgba(0, 0, 0, 0.4) 0px 14px 32px, rgba(0, 180, 216, 0.3) 0px 0px 26px, rgba(0, 180, 216, 0.09) 0px 0px 22px inset; }
+
+.ai-download-note { font-family: Arial, sans-serif; font-size: 11.5px; line-height: 1.5; letter-spacing: 0.2px; color: rgba(255, 255, 255, 0.55); transition: color 0.2s; }
+
+.ai-download-note.is-error { color: rgb(255, 196, 107); }
+
+.ai-download-count { font-family: Orbitron, sans-serif; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: rgba(0, 180, 216, 0.85); }
+
+.ai-download-count[hidden] { display: none; }
+
+.ai-download-count .ai-count-value { color: rgb(255, 255, 255); font-weight: 700; }
+
+@media (max-width: 1100px) {
+  .ai-directory { grid-template-columns: repeat(2, minmax(0px, 1fr)); gap: 18px; }
+  .ai-tool-name { font-size: 20px; }
+}
+
+@media (max-width: 768px) {
+  .iapmd-ai-tools { padding: 10px 0px 35px; }
+  .ai-banner { padding: 15px 12px 25px; }
+  .ai-banner-logo { margin-bottom: 8px; }
+  .ai-banner-logo img { width: 64px; height: 64px; }
+  .ai-title { font-size: 32px; letter-spacing: 2px; }
+  .ai-tagline { font-size: 15px; line-height: 1.5; letter-spacing: 0.8px; }
+  .ai-directory { display: flex; width: 100%; gap: 16px; overflow: auto hidden; padding: 5px 16px 20px; box-sizing: border-box; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
+  .ai-directory::-webkit-scrollbar { display: none; }
+  .ai-tool-card { flex: 0 0 82vw; width: 82vw; max-width: 350px; min-height: 230px; padding: 23px 20px; scroll-snap-align: start; }
+  .ai-icon { flex: 0 0 65px; width: 65px; height: 65px; margin: 0px 0px 16px; }
+  .primaryfinder-icon, .softtissueid-icon, .lymphomadx-icon, .gitisdx-icon, .stagewise-icon { flex: 0 0 65px; width: 65px; height: 65px; }
+  .ai-tool-name { font-size: 20px; letter-spacing: 0.7px; }
+  .ai-tool-subtitle { font-size: 11.5px; }
+  .ai-tool-description { font-size: 12.5px; line-height: 1.55; }
+}
+
+@media (max-width: 480px) {
+  .ai-developer-card { flex-direction: column; gap: 14px; text-align: center; padding: 20px 16px; }
+  .ai-developer-photo { flex: 0 0 84px; width: 84px; height: 84px; }
+  .ai-developer-name { font-size: 17px; }
+  .ai-developer-logo { flex: 0 0 66px; width: 66px; height: 66px; }
+  .ai-directory { gap: 14px; padding-left: 14px; padding-right: 14px; }
+  .ai-tool-card { flex: 0 0 84vw; width: 84vw; max-width: 330px; display: grid; text-align: center; padding: 22px 18px; }
+  .ai-icon, .primaryfinder-icon, .softtissueid-icon, .lymphomadx-icon, .gitisdx-icon, .stagewise-icon { margin: 0px 0px 16px; }
+  .ai-tool-name { font-size: 20px; }
+  .ai-tool-description { max-width: none; }
+  .ai-launch { justify-content: center; }
+}
+</style>
+</head>
+<body>
+<div class="iapmd-ai-tools">
+
+    <!-- =====================================================
+         AI TOOLS BANNER
+    ===================================================== -->
+
+    <div class="ai-banner">
+
+        <button type="button" class="ai-banner-logo" id="aiLogoBtn" aria-expanded="false" aria-controls="aiDevPanel">
+
+            <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_12__2026__09_55_35_am-removebg-preview.png?w=160" alt="IAPMD AI Tools → show developer details">
+
+        </button>
+
+        <div class="ai-banner-hint">
+            Tap the logo for developer details
+        </div>
+
+        <div class="ai-title">
+            AI Tools
+        </div>
+
+        <div class="ai-tagline">
+            Intelligent Solutions for Pathology Innovation
+        </div>
+
+
+        <!-- =================================================
+             DEVELOPER PANEL
+        ================================================= -->
+
+        <div class="ai-developer" id="aiDevPanel" hidden="">
+
+            <div class="ai-developer-card">
+
+                <img class="ai-developer-photo" src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/kadir.png?w=1080" alt="Dr. Abdul Kadir Rifaei">
+
+                <div class="ai-developer-text">
+
+                    <div class="ai-developer-name">
+                        Dr. Abdul Kadir Rifaei
+                    </div>
+
+                    <div class="ai-developer-role">
+                        Pakar Patologi UD15
+                    </div>
+
+                    <div class="ai-developer-dept">
+                        Jabatan Patologi, Hospital Teluk Intan
+                    </div>
+
+                </div>
+
+                <img class="ai-developer-logo" src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/logo_hospital_teluk_intan.png?w=1080" alt="Hospital Teluk Intan">
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         AI TOOLS DIRECTORY
+         4 CARDS ACROSS DESKTOP
+    ===================================================== -->
+
+    <div class="ai-directory">
+
+
+        <!-- =================================================
+             NUCLY
+        ================================================= -->
+
+        <a href="https://www.iapmd.net/ihc-nuclear-counter-nucly" class="ai-tool-card" target="_blank" rel="noopener noreferrer">
+
+            <div class="ai-icon nucly-icon">
+
+                <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/nucly_1.webp?w=1080" alt="NUCLY IHC Nuclear Counter">
+
+            </div>
+
+
+            <div class="ai-card-content">
+
+                <div class="ai-tool-name">
+                    NUCLY
+                </div>
+
+                <div class="ai-tool-subtitle">
+                    IHC Nuclear Counter
+                </div>
+
+                <div class="ai-tool-description">
+                    A nuclear counting tool for
+                    IHC assessment and
+                    quantitative pathology analysis.
+                </div>
+
+                <div class="ai-launch">
+                    <span>Open Tool</span>
+                    <span class="arrow">→</span>
+                </div>
+
+            </div>
+
+        </a>
+
+
+
+        <!-- =================================================
+             BCGcalc
+        ================================================= -->
+
+        <a href="https://www.iapmd.net/breast-carcinoma-grade-calculator-bcgcalc" class="ai-tool-card" target="_blank" rel="noopener noreferrer">
+
+            <div class="ai-icon bcg-icon">
+
+                <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_12__2026__05_11_49_am-removebg-preview.png?w=1080" alt="BCGcalc Breast Carcinoma Grade Calculator">
+
+            </div>
+
+
+            <div class="ai-card-content">
+
+                <div class="ai-tool-name">
+                    BCGcalc
+                </div>
+
+                <div class="ai-tool-subtitle">
+                    Breast Carcinoma Grade Calculator
+                </div>
+
+                <div class="ai-tool-description">
+                    A digital calculator designed to assist
+                    breast carcinoma Nottingham histologic
+                    grading assessment.
+                </div>
+
+                <div class="ai-launch">
+                    <span>Open Tool</span>
+                    <span class="arrow">→</span>
+                </div>
+
+            </div>
+
+        </a>
+
+
+
+        <!-- =================================================
+             RCBxNeo
+        ================================================= -->
+
+        <a href="https://www.iapmd.net/residual-cancer-burden-calc-rcbxneo" class="ai-tool-card" target="_blank" rel="noopener noreferrer">
+
+            <div class="ai-icon rcbxneo-icon">
+
+                <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_oct_1__2026__11_25_37_pm-removebg-preview.png?w=1080" alt="RCBxNeo Post-Neoadjuvant Residual Cancer Burden Calculator">
+
+            </div>
+
+
+            <div class="ai-card-content">
+
+                <div class="ai-tool-name">
+                    RCBxNeo
+                </div>
+
+                <div class="ai-tool-subtitle">
+                    Post-Neoadjuvant Residual Cancer Burden Calculator
+                </div>
+
+                <div class="ai-tool-description">
+                    The Symmans residual cancer burden index for breast
+                    surgical pathology after neoadjuvant therapy, with
+                    RCB class and NAACCR registry coding.
+                </div>
+
+                <div class="ai-launch">
+                    <span>Open Tool</span>
+                    <span class="arrow">→</span>
+                </div>
+
+            </div>
+
+        </a>
+<!-- =================================================
+     IHC+%Calc
+================================================= -->
+
+<a href="https://www.iapmd.net/ihc-calc" class="ai-tool-card" target="_blank" rel="noopener noreferrer">
+
+    <div class="ai-icon ihccalc-icon">
+
+        <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_oct_3_2026_12_55_22_pm.png?w=1080" alt="IHC+%Calc">
+
+    </div>
+
+    <div class="ai-card-content">
+
+        <div class="ai-tool-name">
+            IHC+%Calc
+        </div>
+
+        <div class="ai-tool-subtitle">
+            IHC Positive Cell Percentage Calculator
+        </div>
+
+        <div class="ai-tool-description">
+            A digital pathology calculator designed to
+            determine the percentage of positively stained
+            cells in immunohistochemistry (IHC) assessment
+            for quantitative reporting.
+        </div>
+
+        <div class="ai-launch">
+            <span>Open Tool</span>
+            <span class="arrow">→</span>
+        </div>
+
+    </div>
+
+</a>
+
+
+
+        <!-- =================================================
+             GISTrc
+        ================================================= -->
+
+        <a href="https://www.iapmd.net/gist-risk-calculator-gistrc" class="ai-tool-card" target="_blank" rel="noopener noreferrer">
+
+            <div class="ai-icon gistrc-icon">
+
+                <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_12__2026__09_43_59_am-removebg-preview.png?w=1080" alt="GISTrc GIST Risk Calculator">
+
+            </div>
+
+
+            <div class="ai-card-content">
+
+                <div class="ai-tool-name">
+                    GISTrc
+                </div>
+
+                <div class="ai-tool-subtitle">
+                    GIST Risk Calculator
+                </div>
+
+                <div class="ai-tool-description">
+                    A digital risk assessment tool designed to
+                    assist in evaluating recurrence risk and
+                    prognostic factors in gastrointestinal
+                    stromal tumour (GIST).
+                </div>
+
+                <div class="ai-launch">
+                    <span>Open Tool</span>
+                    <span class="arrow">→</span>
+                </div>
+
+            </div>
+
+        </a>
+
+
+
+        <!-- =================================================
+             1&rarr;Finder
+        ================================================= -->
+
+        <a href="https://www.iapmd.net/primaryfinder" class="ai-tool-card" target="_blank" rel="noopener noreferrer">
+
+            <div class="ai-icon primaryfinder-icon">
+
+                <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_13_2026_03_42_28_am.png" alt="1→Finder">
+
+            </div>
+
+
+            <div class="ai-card-content">
+
+                <div class="ai-tool-name">
+                    1→Finder
+                </div>
+
+                <div class="ai-tool-subtitle">
+                    Primary Carcinoma Finder
+                </div>
+
+                <div class="ai-tool-description">
+                    A pathology tool designed to help identify
+                    the most likely primary site based on IHC,
+                    pathological and clinical findings.
+                </div>
+
+                <div class="ai-launch">
+                    <span>Open Tool</span>
+                    <span class="arrow">→</span>
+                </div>
+
+            </div>
+
+        </a>
+
+
+
+        <!-- =================================================
+             SoftTID
+        ================================================= -->
+
+        <a href="https://www.iapmd.net/softtissueid" class="ai-tool-card" target="_blank" rel="noopener noreferrer">
+
+            <div class="ai-icon softtissueid-icon">
+
+                <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_13__2026__08_52_05_pm-removebg-preview.png" alt="SoftTID">
+
+            </div>
+
+
+            <div class="ai-card-content">
+
+                <div class="ai-tool-name">
+                    SoftTID
+                </div>
+
+                <div class="ai-tool-subtitle">
+                    Soft Tissue Tumour Identifier
+                </div>
+
+                <div class="ai-tool-description">
+                    A pathology tool designed to help identify
+                    and differentiate soft tissue tumours using
+                    morphological, immunohistochemical and
+                    clinical findings.
+                </div>
+
+                <div class="ai-launch">
+                    <span>Open Tool</span>
+                    <span class="arrow">→</span>
+                </div>
+
+            </div>
+
+        </a>
+
+        <!-- =================================================
+             LymphomaDx
+        ================================================= -->
+
+        <a href="https://www.iapmd.net/lymphoma-dx" class="ai-tool-card" target="_blank" rel="noopener noreferrer">
+
+            <div class="ai-icon lymphomadx-icon">
+
+                <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_19__2026__06_30_13_am-removebg-preview.png" alt="LymphomaDx">
+
+            </div>
+
+
+            <div class="ai-card-content">
+
+                <div class="ai-tool-name">
+                    LymphomaDx
+                </div>
+
+                <div class="ai-tool-subtitle">
+                    Lymphoma Diagnostic Assistant
+                </div>
+
+                <div class="ai-tool-description">
+                    A pathology tool designed to assist in
+                    lymphoma differential diagnosis using
+                    morphological, immunophenotypic and clinical findings.
+                </div>
+
+                <div class="ai-launch">
+                    <span>Open Tool</span>
+                    <span class="arrow">→</span>
+                </div>
+
+            </div>
+
+        </a>
+
+
+
+        <!-- =================================================
+             GITisDx
+        ================================================= -->
+
+        <a href="https://www.iapmd.net/git-is-dx" class="ai-tool-card" target="_blank" rel="noopener noreferrer">
+
+            <div class="ai-icon gitisdx-icon">
+
+                <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_19__2026__06_32_18_am-removebg-preview.png" alt="GITisDx">
+
+            </div>
+
+
+            <div class="ai-card-content">
+
+                <div class="ai-tool-name">
+                    GITisDx
+                </div>
+
+                <div class="ai-tool-subtitle">
+                    Gastrointestinal Diagnostic Assistant
+                </div>
+
+                <div class="ai-tool-description">
+                    A pathology tool designed to assist in
+                    gastrointestinal pathology diagnosis using
+                    morphological, clinical and ancillary findings.
+                </div>
+
+                <div class="ai-launch">
+                    <span>Open Tool</span>
+                    <span class="arrow">→</span>
+                </div>
+
+            </div>
+
+        </a>
+
+
+        <!-- =================================================
+             StageWise
+        ================================================= -->
+
+        <a href="https://www.iapmd.net/stage-wise" class="ai-tool-card" target="_blank" rel="noopener noreferrer">
+
+            <div class="ai-icon stagewise-icon">
+
+                <img src="https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/chatgpt_image_sep_27_2026_03_59_24_am.png?w=1080" alt="StageWise TNM Stage Grouping">
+
+            </div>
+
+
+            <div class="ai-card-content">
+
+                <div class="ai-tool-name">
+                    StageWise
+                </div>
+
+                <div class="ai-tool-subtitle">
+                    Site-Specific TNM Stage Grouping
+                </div>
+
+                <div class="ai-tool-description">
+                    A site-specific TNM stage grouping tool
+                    designed to assist accurate cancer staging
+                    using AJCC/UICC classification systems.
+                </div>
+
+                <div class="ai-launch">
+                    <span>Open Tool</span>
+                    <span class="arrow">→</span>
+                </div>
+
+            </div>
+
+        </a>
+
+
+    </div>
+
+
+
+    <!-- =====================================================
+         ACTION BUTTONS
+    ===================================================== -->
+
+    <div class="ai-download">
+
+        <div class="ai-download-actions">
+
+            <a href="https://www.iapmd.net/path-quiz" class="ai-download-btn ai-badge-btn" target="_blank" rel="noopener noreferrer">
+
+                <span class="ai-download-icon">?</span>
+
+                <span class="ai-download-label">PathQuiz</span>
+
+            </a>
+
+
+            <a href="https://www.iapmd.net/resources-for-ap" class="ai-download-btn ai-badge-btn" target="_blank" rel="noopener noreferrer">
+
+                <span class="ai-download-icon">
+
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#051729" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        <path d="M4 17.5h16"></path>
+                    </svg>
+
+                </span>
+
+                <span class="ai-download-label">Resources for AP</span>
+
+            </a>
+
+
+            <button type="button" class="ai-download-btn" id="aiDownloadBtn">
+
+                <span class="ai-download-icon">→</span>
+
+                <span class="ai-download-label">Download Page</span>
+
+            </button>
+
+        </div>
+
+        <div class="ai-download-note">
+            Practise with PathQuiz, browse the AP resources, or save the directory as AI Tools.html
+        </div>
+
+        <div class="ai-download-count" id="aiDownloadCount" hidden="">
+            Downloads: <span class="ai-count-value">0</span>
+        </div>
+    </div>
+
+
+            <script>
+
+        (function () {
+
+            /* =================================================
+               DEVELOPER PANEL TOGGLE
+            ================================================= */
+
+            var logoBtn = document.getElementById('aiLogoBtn');
+
+            var devPanel = document.getElementById('aiDevPanel');
+
+            if (logoBtn && devPanel) {
+
+                var toggleDev = function () {
+
+                    var isOpen = logoBtn.getAttribute('aria-expanded') === 'true';
+
+                    logoBtn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+
+                    logoBtn.classList.toggle('is-open', !isOpen);
+
+                    devPanel.hidden = isOpen;
+
+                };
+
+                logoBtn.addEventListener('click', toggleDev);
+
+                logoBtn.addEventListener('keydown', function (e) {
+
+                    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
+
+                        e.preventDefault();
+
+                        toggleDev();
+
+                    }
+
+                });
+
+            }
+
+
+            /* =================================================
+               DOWNLOAD &rarr; no server needed
+            ================================================= */
+
+            var btn = document.getElementById('aiDownloadBtn');
+
+            if (!btn) { return; }
+
+            var label = btn.querySelector('.ai-download-label');
+
+            var note = document.querySelector('.ai-download-note');
+
+            var SHORTCUT_ICON =
+                'https://cdn1.artcltn.com/storage/25635/' +
+                'a233962a-ffe4-4e35-a0f2-86c48caa4ff2/' +
+                'chatgpt_image_sep_12__2026__09_55_35_am-removebg-preview.png?w=64';
+
+            /* =================================================
+               DOWNLOAD LOGGING &rarr; no server, no hosting
+
+               Everything is written into one Google Sheet through a
+               Google Form. Add these questions to the form:
+
+               1. "Download"   multiple choice, option "Option 1"
+                               (already exists)
+               2. "Country"    Short answer
+               3. "Visitor"    Short answer
+
+               Short answer is used on purpose: it accepts any text, so
+               the page can post the country name without matching an
+               option list.
+
+               Then copy the entry id of each question: open the form,
+               press Ctrl+U and search for name="entry" &rarr; each question
+               has its own number. Paste the numbers below.
+
+               Getting an entry id:
+               docs.google.com/forms/d/e/FORM_ID/viewform
+
+               Country comes from the visitor's IP (free ipwho.is
+               lookup, cached for a day in their own browser).
+               "New" or "Returning" is remembered in the visitor's
+               browser, so a second download from the same browser is
+               recorded as Returning.
+
+               Reading the numbers in the sheet: Insert > Pivot table
+               with Rows = Country to see the country split, and add a
+               pivot or a COUNTA filter on Visitor = "New" for unique
+               downloads.
+
+               OPTIONAL &rarr; live counter shown on the page.
+               Sign up at counterapi.dev and fill in the workspace,
+               counter name and API key below.
+
+               Leave anything blank to switch that part off.
+            ================================================= */
+
+            var FORM_ID = '1FAIpQLSezchrK64lfgxRNts8stlNcg8cRu7CJD7uZo8gxxLInALlAfA';
+
+            var FORM_ENTRY = '903308781';
+
+            var FORM_VALUE = 'Option 1';
+
+            /* Country question &rarr; dropdown entry id (blank = skip) */
+
+            var GEO_ENTRY = '141212056';
+
+            /* Visitor question &rarr; New/Returning entry id (blank = skip) */
+
+            var VISITOR_ENTRY = '392129829';
+
+            var VISITOR_NEW = 'New';
+
+            var VISITOR_RETURNING = 'Returning';
+
+            var GEO_API = 'https://ipwho.is/';
+
+            var UNIQUE_KEY = 'iapmd_ai_tools_downloaded';
+
+            var GEO_KEY = 'iapmd_ai_tools_country';
+
+            var GEO_TTL = 86400000;
+
+            var COUNT_WORKSPACE = '';
+
+            var COUNT_NAME = 'ai-tools-downloads';
+
+            var COUNT_KEY = '';
+
+            var countBox = document.getElementById('aiDownloadCount');
+
+            var countValue = countBox
+                ? countBox.querySelector('.ai-count-value')
+                : null;
+
+            function showCount(value) {
+
+                if (!countBox || !countValue) { return; }
+
+                if (typeof value !== 'number' || isNaN(value)) { return; }
+
+                countValue.textContent = String(value);
+
+                countBox.hidden = false;
+
+            }
+
+
+            function logStatus(message) {
+
+                if (typeof console !== 'undefined' && console.info) {
+                    console.info('[AI Tools] download log: ' + message);
+                }
+
+            }
+
+
+            function readCachedCountry() {
+
+                if (!GEO_ENTRY) { return ''; }
+
+                try {
+
+                    var raw = window.localStorage.getItem(GEO_KEY);
+
+                    if (!raw) { return ''; }
+
+                    var saved = JSON.parse(raw);
+
+                    if (!saved || !saved.name) { return ''; }
+
+                    if (Date.now() - saved.at > GEO_TTL) { return ''; }
+
+                    return saved.name;
+
+                } catch (e) {
+
+                    return '';
+
+                }
+
+            }
+
+
+            function cacheCountry(name) {
+
+                try {
+                    window.localStorage.setItem(
+                        GEO_KEY,
+                        JSON.stringify({ name: name, at: Date.now() })
+                    );
+                } catch (e) { /* storage may be blocked */ }
+
+            }
+
+
+            var country = readCachedCountry();
+
+
+            function lookupCountry() {
+
+                if (!GEO_ENTRY || country || !window.fetch) { return; }
+
+                try {
+
+                    fetch(GEO_API).then(function (res) {
+                        return res.ok ? res.json() : null;
+                    }).then(function (data) {
+
+                        if (!data || !data.success || !data.country) {
+                            return;
+                        }
+
+                        country = data.country +
+                            (data.country_code ? ' (' + data.country_code + ')' : '');
+
+                        cacheCountry(country);
+
+                    }).catch(function () { /* offline or blocked */ });
+
+                } catch (e) { /* ignore */ }
+
+            }
+
+
+            function visitorType() {
+
+                if (!VISITOR_ENTRY) { return ''; }
+
+                try {
+
+                    if (window.localStorage.getItem(UNIQUE_KEY)) {
+                        return VISITOR_RETURNING;
+                    }
+
+                    window.localStorage.setItem(UNIQUE_KEY, String(Date.now()));
+
+                    return VISITOR_NEW;
+
+                } catch (e) {
+
+                    return VISITOR_NEW;
+
+                }
+
+            }
+
+
+            function logToGoogleForm() {
+
+                if (!FORM_ID || !FORM_ENTRY) { return; }
+
+                var url =
+                    'https://docs.google.com/forms/d/e/' +
+                    FORM_ID +
+                    '/formResponse';
+
+                /* Every question is multiple choice, so each value must
+                   match the exact text of one of that question's options. */
+
+                var body =
+                    'entry.' + FORM_ENTRY + '=' +
+                    encodeURIComponent(FORM_VALUE || 'Option 1');
+
+                if (GEO_ENTRY && country) {
+
+                    body += '&entry.' + GEO_ENTRY + '=' +
+                        encodeURIComponent(country);
+
+                }
+
+                if (VISITOR_ENTRY) {
+
+                    body += '&entry.' + VISITOR_ENTRY + '=' +
+                        encodeURIComponent(visitorType());
+
+                }
+
+                /* sendBeacon survives page unload and needs no preflight */
+
+                if (window.navigator && navigator.sendBeacon) {
+
+                    try {
+
+                        if (navigator.sendBeacon(
+                            url,
+                            new URLSearchParams(body)
+                        )) {
+                            logStatus('sent (beacon)');
+                            return;
+                        }
+
+                    } catch (e) { /* fall back to fetch */ }
+
+                }
+
+                if (!window.fetch) {
+
+                    logStatus('no fetch available');
+
+                    return;
+
+                }
+
+                try {
+
+                    fetch(url, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        keepalive: true,
+                        headers: {
+                            'Content-Type':
+                                'application/x-www-form-urlencoded'
+                        },
+                        body: body
+                    }).then(function () {
+
+                        logStatus('sent (fetch)');
+
+                    }).catch(function (err) {
+
+                        logStatus('failed: ' + (err && err.message));
+
+                    });
+
+                } catch (e) {
+
+                    logStatus('failed: ' + e.message);
+
+                }
+
+            }
+
+
+            function counterUrl(path) {
+
+                if (!COUNT_WORKSPACE || !COUNT_NAME) { return ''; }
+
+                return 'https://api.counterapi.dev/v2/' +
+                    COUNT_WORKSPACE + '/' + COUNT_NAME + path;
+
+            }
+
+
+            function counterHeaders() {
+
+                return COUNT_KEY
+                    ? { 'Authorization': 'Bearer ' + COUNT_KEY }
+                    : {};
+
+            }
+
+
+            function readCount() {
+
+                var url = counterUrl('');
+
+                if (!url || !window.fetch) { return; }
+
+                try {
+
+                    fetch(url, { headers: counterHeaders() })
+                        .then(function (res) {
+                            return res.ok ? res.json() : null;
+                        })
+                        .then(function (data) {
+                            if (data && typeof data.count === 'number') {
+                                showCount(data.count);
+                            }
+                        })
+                        .catch(function () { /* blocked or offline */ });
+
+                } catch (e) { /* ignore */ }
+
+            }
+
+
+            function countDownload() {
+
+                var url = counterUrl('/up');
+
+                if (!url || !window.fetch) { return; }
+
+                try {
+
+                    fetch(url, { headers: counterHeaders() })
+                        .then(function (res) {
+                            return res.ok ? res.json() : null;
+                        })
+                        .then(function (data) {
+                            if (data && typeof data.count === 'number') {
+                                showCount(data.count);
+                            }
+                        })
+                        .catch(function () { /* ignore */ });
+
+                } catch (e) { /* ignore */ }
+
+            }
+
+            readCount();
+
+            lookupCountry();
+
+            function collectCSS() {
+
+                var out = [];
+
+                var sheets = document.styleSheets;
+
+                for (var i = 0; i < sheets.length; i++) {
+
+                    var sheet = sheets[i];
+
+                    if (sheet.href) { continue; }
+
+                    var rules;
+
+                    try {
+                        rules = sheet.cssRules;
+                    } catch (e) {
+                        continue;
+                    }
+
+                    if (!rules) { continue; }
+
+                    for (var j = 0; j < rules.length; j++) {
+
+                        var text = rules[j].cssText;
+
+                        if (!text) { continue; }
+
+                        if (text.indexOf('iapmd') > -1 ||
+                            text.indexOf('ai-') > -1 ||
+                            text.indexOf('keyframes') > -1) {
+                            out.push(text);
+                        }
+
+                    }
+
+                }
+
+                return out.join('\n\n');
+
+            }
+
+            function buildFile() {
+
+                var container = document.querySelector('.iapmd-ai-tools');
+
+                if (!container) { return ''; }
+
+                return '<!doctype html>\n' +
+                    '<html lang="en">\n' +
+                    '<head>\n' +
+                    '<meta charset="utf-8">\n' +
+                    '<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
+                    '<title>IAPMD AI Tools</title>\n' +
+                    '<link rel="icon" type="image/png" sizes="32x32" href="' + SHORTCUT_ICON + '">\n' +
+                    '<link rel="apple-touch-icon" href="' + SHORTCUT_ICON + '">\n' +
+                    '<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700&display=swap" rel="stylesheet">\n' +
+                    '<style>\n' +
+                    'body { margin: 0; background: #051729; }\n\n' +
+                    collectCSS() +
+                    '\n</style>\n' +
+                    '</head>\n' +
+                    '<body>\n' +
+                    container.outerHTML +
+                    '\n</body>\n' +
+                    '</html>';
+
+            }
+
+            function showProblem(message) {
+
+                if (!note) { return; }
+
+                note.textContent = message;
+
+                note.classList.add('is-error');
+
+            }
+
+            function markDone() {
+
+                if (!label) { return; }
+
+                var original = label.textContent;
+
+                label.textContent = 'Saved';
+
+                btn.classList.add('is-done');
+
+                setTimeout(function () {
+
+                    label.textContent = original;
+
+                    btn.classList.remove('is-done');
+
+                }, 2200);
+
+            }
+
+
+            function logDownload() {
+
+                logToGoogleForm();
+
+                countDownload();
+
+            }
+
+            function saveViaBlob(blob, fileName) {
+
+                var url = URL.createObjectURL(blob);
+
+                var link = document.createElement('a');
+
+                link.href = url;
+
+                link.download = fileName;
+
+                link.style.display = 'none';
+
+                document.body.appendChild(link);
+
+                link.click();
+
+                setTimeout(function () {
+                    document.body.removeChild(link);
+                }, 100);
+
+                setTimeout(function () {
+                    URL.revokeObjectURL(url);
+                }, 30000);
+
+                markDone();
+
+            }
+
+            /* ---------- MEDIA APP (Median) SUPPORT ----------
+               Inside the Median app the page runs in a webview, which
+               blocks blob: downloads. There the button hands a REAL file
+               URL to Median's native downloader instead.
+               1. Upload a saved copy of "AI Tools.html" to your site's
+                  file storage.
+               2. Paste its public link below. */
+            var HOSTED_COPY_URL = 'https://cdn1.artcltn.com/storage/25635/a233962a-ffe4-4e35-a0f2-86c48caa4ff2/ai_tools.html?download=1';   /* e.g. 'https://cdn1.artcltn.com/storage/.../AI_Tools.html' */
+
+            function inMedianApp() {
+                return !!(window.median || window.gonative) ||
+                    /median|gonative/i.test(navigator.userAgent || '');
+            }
+
+            function downloadInApp() {
+                if (!HOSTED_COPY_URL) {
+                    showProblem('Download is not available in the app yet.');
+                    return;
+                }
+                logDownload();
+                if (window.median && median.share && median.share.downloadFile) {
+                    median.share.downloadFile({
+                        url: HOSTED_COPY_URL,
+                        filename: 'AI Tools.html',
+                        open: false
+                    });
+                    markDone();
+                } else {
+                    /* bridge not ready: let the app handle the link */
+                    window.location.href = HOSTED_COPY_URL;
+                }
+            }
+
+            btn.addEventListener('click', function () {
+
+                if (inMedianApp()) {
+                    downloadInApp();
+                    return;
+                }
+
+                var html;
+
+                try {
+                    html = buildFile();
+                } catch (e) {
+
+                    showProblem('Could not build the file: ' + e.message);
+
+                    return;
+
+                }
+
+                if (!html) {
+
+                    showProblem('Could not build the file - please try again.');
+
+                    return;
+
+                }
+
+                var fileName = 'AI Tools.html';
+
+                /* octet-stream so Edge downloads the file
+                   instead of opening the .html document */
+
+                var blob = new Blob([html], { type: 'application/octet-stream' });
+
+                if (blob.size > 0) {
+
+                    logDownload();
+
+                    saveViaBlob(blob, fileName);
+
+                    return;
+
+                }
+
+                var link = document.createElement('a');
+
+                link.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+
+                link.download = fileName;
+
+                link.style.display = 'none';
+
+                document.body.appendChild(link);
+
+                link.click();
+
+                document.body.removeChild(link);
+
+                logDownload();
+
+                markDone();
+
+            });
+
+        })();
+
+    </script>
+
+</div>
+</body>
+</html>
